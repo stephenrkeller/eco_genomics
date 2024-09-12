@@ -12,6 +12,10 @@ We'll be analyzing the GBS data from 3 regions (EU, NE, PNW) starting today with
 
 ### 09-11-2024: update to shared data access
 
-* group management for //netfiles03/ecogen is handled by ETS, so we have to go through them to update enrollment via banner.  Decided this might not be most efficient way to proceed.
-* Alternative is to copy dir's over to /gpfs1/cl/pbio3990 via VACC interactive terminal -- since both drives can be mounted and file/dir exchange can take place directly via `cp`
-* So, moving forward, all paths will direct to /gpfs1/cl/pbio3990 for data access
+-   group management for //netfiles03/ecogen is handled by ETS, so we have to go through them to update enrollment via banner. Decided this might not be most efficient way to proceed.
+-   Alternative is to copy dir's over to /gpfs1/cl/pbio3990 via VACC interactive terminal -- since both drives can be mounted and file/dir exchange can take place directly via `cp`
+-   So, moving forward, all paths will direct to /gpfs1/cl/pbio3990 for data access
+
+### 09-12-24 Viewing VCF files and talking about filtering
+
+
