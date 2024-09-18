@@ -18,4 +18,6 @@ We'll be analyzing the GBS data from 3 regions (EU, NE, PNW) starting today with
 
 ### 09-12-24 Viewing VCF files and talking about filtering
 
+### 09-17-24 Finishing filtering our VCF files and getting ready for diversity stats
 
+* 
