@@ -121,8 +121,7 @@ heatmap.bp(DP2[1:5000,],
 # to our repo for working with downstream so we don't have to repeat all these filtering steps each time
 # Think carefully about *where* you're saving this file so you know how to get back to it... :)
 
-write.vcf(vcf.filt.indSNPMiss, 
-          "~/projects/eco_genomics/population_genomics/outputs/vcf_final.filtered.vcf.gz")
+write.vcf(vcf.filt.indSNPMiss, "~/projects/eco_genomics/population_genomics/outputs/vcf_final.filtered.vcf.gz")
 
 
 
