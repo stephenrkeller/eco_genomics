@@ -1,4 +1,4 @@
-# Estimating diversity and genetic differentation in the filtered Centaurea data
+# Estimating diversity and genetic differentiation in the filtered Centaurea data
 
 library(vcfR)
 library(tidyverse)
@@ -6,6 +6,7 @@ library(qqman)
 
 # helps solve plotting issues:
 X11.options(type="cairo")
+options(bitmapType="cairo")
 
 # read in our VCF file from out repio outputs/ directory
 
@@ -21,7 +22,7 @@ dim(meta) # meta has 629 inds
 # it has just those sample id's that are also present in our filtered vcf file.
 # we'll do that using the special %in% operator, which finds matches between 2 objects:
 # Here, we're matching the 'id' column in 'meta' with the sample id's in the vcf file
-# Note the vcf file stores the sample id's as column names in the @gt slot...minues the first column which
+# Note the vcf file stores the sample id's as column names in the @gt slot...minus the first column which
 # is reserved for the "INFO" field.
 
 meta2 <- meta[meta$id %in% colnames(vcf@gt[,-1]),] 
@@ -73,3 +74,4 @@ manhattan(vcf.div.MHplot,
 # ask...could be something inhibiting gene flow into that portion of the genome (like genes contributing to 
 # reproductive isolation between species) or perhaps these are genomic regions experiencing selection for local adaptation
 # that causes regions to diverge from each other.  
+
