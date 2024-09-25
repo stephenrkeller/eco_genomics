@@ -8,7 +8,7 @@ library(qqman)
 X11.options(type="cairo")
 options(bitmapType="cairo")
 
-# read in our VCF file from out repio outputs/ directory
+# read in our VCF file from out repo outputs/ directory
 
 vcf <- read.vcfR("~/projects/eco_genomics/population_genomics/outputs/vcf_final.filtered.vcf.gz")
 
@@ -74,4 +74,57 @@ manhattan(vcf.div.MHplot,
 # ask...could be something inhibiting gene flow into that portion of the genome (like genes contributing to 
 # reproductive isolation between species) or perhaps these are genomic regions experiencing selection for local adaptation
 # that causes regions to diverge from each other.  
+
+# Sometimes its helpful to save out derived results like our genetic diversity and differentiation metrics
+# so we can access them in the future without having to run through all the steps each time.
+# Here, we'll save this as a csv file to our outputs directory
+write.csv(vcf.div.MHplot, "~/projects/eco_genomics/population_genomics/outputs/Genetic_Diff_byRegion.csv",
+          quote=F,
+          row.names=F)
+
+# OK, now on to looking at diversity *within* groups (Hs)
+# Which columns in the vcf.div.MHplot house the Hs values for each region?
+names(vcf.div.MHplot) #This prints them to screen, and we see the Hs values in columns 4 through 9
+
+# Let's plot a histogram of those Hs values overall all the loci, 
+# and overlay the results for each region in the same plot for comparison.
+# We'll use tidy operations combined with the %>% operator to wrangel the data 
+# into a form needed for plotting with ggplot.
+vcf.div.MHplot %>% 
+  as_tibble() %>%
+  pivot_longer(c(4:9)) %>%
+  ggplot(aes(x=value, fill=name)) +
+  geom_histogram(position="identity", alpha=0.5, bins=50) +
+  labs(title="Genome-wide expected heterozygosity (Hs)",fill="Regions",
+       x="Gene diversity (Hs) within Regions", y="Counts of SNPs")
+
+# We can save plots we live made with ggplot using the 'ggsave' command:
+ggsave("Histogram_GenomDiversity_byRegion.pdf", 
+       path="~/projects/eco_genomics/population_genomics/figures/")
+
+# In addition to the histogram plots, it can be helpful to summarize the 
+# results in terms of averages, variation (std dev) and sample size (N) 
+# Tidy ehlps us accomplish this with the 'summarise' command, along with 
+# preceding 'group_by' and 'filter' commands to get the comparisons we want.
+# We can run the command without assigning the output to a new variable (as done in class)
+# and it will just print results to the console, or we can assign it to a new variable 
+# (here, named 'Hs_table')and then we can save that result to our repos using the write.csv command...
+Hs_table <- vcf.div.MHplot %>% 
+  as_tibble() %>%
+  pivot_longer(c(4:9)) %>%
+  group_by(name) %>%
+  filter(value!=0 & value<0.25) %>%
+  summarise(avg_Hs=mean(value), StdDev_Hs=sd(value), N_Hs=n())
+
+write.csv(Hs_table, "population_genomics/outputs/Hs_table_noZeros.csv",
+          quote=F,
+          row.names=F)
+
+# Note the above code was customized several times in class, based on our discussion of
+# looking at Hs values across *all* loci, or just ones that had non-zero values (using the added filtering step)
+# You're choice in any given analysis must be guided by what you want to learn, and it may be useful to look 
+# at the data in several ways (i.e., with and without loci where Hs=0, or what proportion of loci are Hs=0 in each group).
+
+
+
 
