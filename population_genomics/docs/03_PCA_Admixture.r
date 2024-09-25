@@ -45,13 +45,16 @@ geno <- vcf2geno(input.file="/gpfs1/home/s/r/srkeller/vcf_final.filtered.thinned
                  output.file="outputs/vcf_final.filtered.thinned.geno")
 
 # Now we're ready to do the PCA!
-CentPCA <- LEA::pca("population_genomics/outputs/vcf_final.filtered.thinned.geno", scale=TRUE)
+CentPCA <- LEA::pca("outputs/vcf_final.filtered.thinned.geno", scale=TRUE)
 
+# Note to future self, if you've already done the PCA previously, 
+# you can load the results in without running it again like so:
 CentPCA <- load.pcaProject("vcf_final.filtered.thinned.pcaProject")
 
 plot(CentPCA$projections,
      col=as.factor(meta2$region))
-legend("bottomright", legend=as.factor(unique(meta2$region)), 
-                                       fill=as.factor(unique(meta2$region)))
+legend("bottomright", 
+       legend=as.factor(unique(meta2$region)),
+       fill=as.factor(unique(meta2$region)))
 
 

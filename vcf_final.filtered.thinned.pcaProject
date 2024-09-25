@@ -1,6 +1,0 @@
-new("pcaProject", projDir = "/gpfs1/home/s/r/srkeller/projects/eco_genomics/population_genomics/outputs/", 
-    pcaDir = "vcf_final.filtered.thinned.pca/", n = 595L, L = 3656L, 
-    K = 595L, center = TRUE, scale = TRUE, pcaProject.file = "vcf_final.filtered.thinned.pcaProject", 
-    input.file = "vcf_final.filtered.thinned.lfmm", eigenvalue.file = "vcf_final.filtered.thinned.eigenvalues", 
-    eigenvector.file = "vcf_final.filtered.thinned.eigenvectors", 
-    sdev.file = "vcf_final.filtered.thinned.sdev", projection.file = "vcf_final.filtered.thinned.projections")
