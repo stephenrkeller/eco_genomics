@@ -1,5 +1,4 @@
 # Estimating diversity and genetic differentiation in the filtered Centaurea data
-
 library(vcfR)
 library(tidyverse)
 library(qqman)
