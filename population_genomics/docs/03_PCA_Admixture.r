@@ -51,10 +51,10 @@ CentPCA <- LEA::pca("outputs/vcf_final.filtered.thinned.geno", scale=TRUE)
 # you can load the results in without running it again like so:
 CentPCA <- load.pcaProject("vcf_final.filtered.thinned.pcaProject")
 
-plot(CentPCA$projections,
-     col=as.factor(meta2$region))
-legend("bottomright", 
-       legend=as.factor(unique(meta2$region)),
-       fill=as.factor(unique(meta2$region)))
+# plot(CentPCA$projections,
+#      col=as.factor(meta2$region))
+# legend("bottomright", 
+#        legend=as.factor(unique(meta2$region)),
+#        fill=as.factor(unique(meta2$region)))
 
 
