@@ -21,7 +21,7 @@ meta <- read.csv("/gpfs1/cl/pbio3990/PopulationGenomics/metadata/meta4vcf.csv")
 
 dim(meta)
 
-meta2 <- meta[meta$id %in% colnames(vcf.thin@gt[, -1]) , ]
+meta2 <- meta[meta$id %in% colnames(vcf@gt[, -1]) , ]
 
 dim(meta2)
 
@@ -51,10 +51,26 @@ CentPCA <- LEA::pca("outputs/vcf_final.filtered.thinned.geno", scale=TRUE)
 # you can load the results in without running it again like so:
 CentPCA <- load.pcaProject("vcf_final.filtered.thinned.pcaProject")
 
+show(CentPCA)
+
+plot(CentPCA)
+
 # plot(CentPCA$projections,
 #      col=as.factor(meta2$region))
 # legend("bottomright", 
 #        legend=as.factor(unique(meta2$region)),
 #        fill=as.factor(unique(meta2$region)))
+
+ggplot(as.data.frame(CentPCA$projections),
+       aes(x=V1, y=V2, color=meta2$region, shape=meta2$continent)) +
+       geom_point(alpha=0.5) +
+       labs(title="Centaurea genetic PCA",x="PC1 (2.2%)",y="PC2 (1.1%)",color="Region",shape="Continent") 
+#        xlim(-10,10) +
+#        ylim(-10,10)
+
+ggsave("figures/CentPCA_PC1vPC2.pdf", width=6, height=6, units ="in")
+
+
+
 
 
