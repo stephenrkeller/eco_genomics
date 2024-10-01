@@ -71,6 +71,65 @@ ggplot(as.data.frame(CentPCA$projections),
 ggsave("figures/CentPCA_PC1vPC2.pdf", width=6, height=6, units ="in")
 
 
+# Now, we will run Admixture analyses and create plots
+# For Admixture, we're going to use the LEA R package.
+# The function inside LEA is called 'snmf'
 
+CentAdmix <- snmf("outputs/vcf_final.filtered.thinned.geno",
+                  K=1:10,
+                  entropy=T,
+                  repetitions =3,
+                  project="new")  # if you're adding to this analysis later, you could choose project="continue"
+
+# We can compare evidence for different levels of K (or PCs) using 
+# the cross-entropy from snmf and the screeplot from PCA:
+
+par(mfrow=c(2,1)) # This sets up a multi-panel plot
+plot(CentAdmix, col="blue4", main="SNMF") # This plots the Cross-Entropy score we can use for selecting models with K values that fit our data well
+plot(CentPCA$eigenvalues[1:10], ylab="Eigenvalues", xlab="Number of PCs", col="blue4",main="PCA")
+dev.off() # This turns off the multi-panel setting; need to do this, otherwise, all subsequent plots will be in 2 panels!
+
+# Now, we set a value of "K" to investigate
+myK=4
+
+# Calculate the cross-entropy (=model fit; lower values are better) for all 
+# reps, then determine which rep has the lowest score; we'll use that for plotting
+CE = cross.entropy(CentAdmix, K=myK)
+best = which.min(CE)
+
+# Extract the ancestry coefficients (the Q scores)
+myKQ = Q(CentAdmix, K=myK, run=best)
+
+# and cbind to the metadata
+myKQmeta = cbind(myKQ, meta2)
+
+# set up a color panel to use
+my.colors = c("blue4","gold","tomato","lightblue","olivedrab")
+
+# sort the entire dataset by features of interest in the metadata prior to plotting
+# Here, I first group by continent, then sort by region and pop within continents
+myKQmeta  = as_tibble(myKQmeta) %>%
+  group_by(continent) %>%
+  arrange(region,pop, .by_group=TRUE)
+
+# Lastly, make a ancestry plot, and save it as a pdf to my figures/ directory
+pdf("figures/Amdixture_K4.pdf", width=10, height=5)
+barplot(as.matrix(t(myKQmeta[,1:myK])),
+        border=NA,
+        space=0,
+        col=my.colors[1:myK],
+        xlab="Geographic regions",
+        ylab="Ancestry proportions",
+        main=paste0("Ancestry matrix K=",myK))
+axis(1,
+     at=1:length(myKQmeta$region),
+     labels=myKQmeta$region,
+     tick=F,
+     cex.axis=0.5,
+     las=3)
+dev.off()
+
+# You can create multiple plots like this by varying "myK=value" statement
+# and then running the code below that again.  Everything should propagate from that myK value.
 
 
