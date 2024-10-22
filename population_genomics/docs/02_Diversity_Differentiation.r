@@ -10,7 +10,7 @@ options(bitmapType="cairo")
 
 # read in our VCF file from out repo outputs/ directory
 
-vcf <- read.vcfR("~/projects/eco_genomics/population_genomics/outputs/vcf_final.filtered.vcf.gz")
+vcf <- read.vcfR("~/projects/eco_genomics/population_genomics/outputs/vcf_final.filtered.0.5.vcf.gz")
 
 # read in our metadata - -info on population of origin, what region the pops come from, what continent, etc.
 meta <- read.csv("/gpfs1/cl/pbio3990/PopulationGenomics/metadata/meta4vcf.csv")
