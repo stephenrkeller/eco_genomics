@@ -4,8 +4,8 @@
 setwd("~/projects/eco_genomics/transcriptomics") # for in class on server
 #setwd("/Users/mpespeni/Dropbox/2_Teaching/Intro_Ecological_Genomics/from_Alison") # when on my machine
 
-library(DESeq2)
 library(ggplot2)
+library(DESeq2)
 
 options(bitmapType="cairo")
 
@@ -198,7 +198,7 @@ pheatmap(mat, annotation_col=df, show_rownames=FALSE, cluster_cols=T,cluster_row
 
 
 # Let's set up references for each contrast between treatments 
-. 
+
 dds$treatment <- relevel(dds$DevTemp, ref = "D18")
 dds$generation <- relevel(dds$FinalTemp, ref = "BASE")
 
