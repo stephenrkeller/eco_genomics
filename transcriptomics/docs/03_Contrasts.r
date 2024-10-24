@@ -1,8 +1,21 @@
 library(eulerr)
 library(DESeq2)
+library(ggplot2)
 
 # picking up from import of counts matrix and meta data and creation of dds object from previous script:
 # "Transcriptomics_Days1-4.R"
+
+options(bitmapType="cairo")
+
+# Import the counts matrix
+countsTable <- read.table("/gpfs1/cl/pbio3990/Transcriptomics/tonsa_counts.txt", header=TRUE, row.names=1)
+countsTableRound <- round(countsTable) # bc DESeq2 doesn't like decimals (and Salmon outputs data with decimals)
+conds <- read.delim("/gpfs1/cl/pbio3990/Transcriptomics/experimental_details.txt", header=TRUE, stringsAsFactors = TRUE, row.names=1)
+
+
+dds <- DESeqDataSetFromMatrix(countData = countsTableRound, colData=conds, 
+                              design= ~ DevTemp + FinalTemp)
+dds <- dds[rowSums(counts(dds) >= 10) >= 15,]
 
 # Let's set up references for each contrast between treatments 
 
@@ -124,7 +137,7 @@ color_counts <- res_df28 %>%
   group_by(fill) %>%
   summarise(count = n())
 
-label_positions <- data.frame(fill=c("blue2","magenta","red","turquoise"),
+label_positions <- data.frame(fill=c("blue2","magenta1","red","turquoise2"),
                               x_pos=c(1,5,0,-7.5),
                               y_pos=c(-5,0,9,3))
 
@@ -134,9 +147,12 @@ label_data <- merge(color_counts,label_positions,by="fill")
 # plot!
 
 ggplot(res_df28, aes(x=log2FoldChange.18, y=log2FoldChange.22, color=fill)) +
-  geom_point(alpha=0.8) +
+  geom_point(alpha=1) +
   scale_color_identity() +
   geom_text(data=label_data, aes(x=x_pos, y=y_pos, label=count, color=fill), size=5) +
+  geom_abline(intercept=0, slope=1, linetype="dashed",color="black") +
+  geom_abline(intercept=0, slope=-1, linetype="dashed",color="gray") +
+  xlim(-10,10) + ylim(-10,10) +
   labs(x="Log2FoldChange 28 vs. BASE at 18",
        y="log2FoldChange 28 vs. BASE at 22", title="How does response to 28C vary by DevTemp?") +
   theme_minimal()
@@ -152,22 +168,20 @@ res_D18_BASEvsA33 <- as.data.frame(results(dds,
                                            contrast=c("group","D18BASE","D18A33"), alpha=0.05))
 # contrast D22_A33vsBASE
 
-res_D22_BASEvsA28 <- as.data.frame(results(dds, 
-                                           contrast=c("group","D22BASE","D22A28"), alpha=0.05))
+res_D22_BASEvsA33 <- as.data.frame(results(dds, 
+                                           contrast=c("group","D22BASE","D22A33"), alpha=0.05))
 
 # merge dataframes
 
-res_df28 <- merge(res_D18_BASEvsA28, res_D22_BASEvsA28, by="row.names", suffixes=c(".18",".22"))
+res_df33 <- merge(res_D18_BASEvsA33, res_D22_BASEvsA33, by="row.names", suffixes=c(".18",".22"))
 
-rownames(res_df28) <- res_df28$Row.names
+rownames(res_df33) <- res_df33$Row.names
 
-res_df28 <- res_df28[,-1]
-
-library(tidyverse)
+res_df33 <- res_df33[,-1]
 
 # Define colors with mutate function
 
-res_df28 <- res_df28 %>% 
+res_df33 <- res_df33 %>% 
   mutate(fill=case_when(
     padj.18 < 0.05 & stat.18 < 0 ~ "turquoise2",
     padj.18 < 0.05 & stat.18 > 0 ~ "magenta1",
@@ -177,11 +191,15 @@ res_df28 <- res_df28 %>%
 
 # plot!
 
-ggplot(res_df28, aes(x=log2FoldChange.18, y=log2FoldChange.22, color=fill)) +
-  geom_point(alpha=0.8) +
+ggplot(res_df33, aes(x=log2FoldChange.18, y=log2FoldChange.22, color=fill)) +
+  geom_point(alpha=1) +
   scale_color_identity() +
-  labs(x="Log2FoldChange 28 vs. BASE at 18",
-       y="log2FoldChange 28 vs. BASE at 22", title="How does response to 28C vary by DevTemp?") +
+  geom_text(data=label_data, aes(x=x_pos, y=y_pos, label=count, color=fill), size=5) +
+  geom_abline(intercept=0, slope=1, linetype="dashed",color="black") +
+  geom_abline(intercept=0, slope=-1, linetype="dashed",color="gray") +
+  xlim(-10,10) + ylim(-10,10) +
+  labs(x="Log2FoldChange 33 vs. BASE at 18",
+       y="log2FoldChange 33 vs. BASE at 22", title="How does response to 33C vary by DevTemp?") +
   theme_minimal()
 
 
